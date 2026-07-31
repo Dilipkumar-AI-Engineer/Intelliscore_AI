@@ -10,6 +10,7 @@ behind one simple interface.
 """
 
 from ml.nlp.basic_stats import compute_basic_stats
+from ml.nlp.grammar_analysis import analyze_passive_voice
 from ml.nlp.keywords import extract_keywords
 from ml.nlp.linguistic_features import (
     compute_lexical_diversity,
@@ -18,6 +19,9 @@ from ml.nlp.linguistic_features import (
 )
 from ml.nlp.preprocessing import process_text
 from ml.nlp.readability import compute_readability
+from ml.nlp.spelling import analyze_spelling
+from ml.nlp.transitions import analyze_transitions
+from ml.nlp.vocabulary_analysis import analyze_repeated_words
 
 
 def extract_features(raw_text: str) -> dict:
@@ -40,12 +44,17 @@ def extract_features(raw_text: str) -> dict:
     # facade: callers never see this reuse happening, but it's why the
     # pipeline is fast.
     doc = process_text(raw_text)
+    basic_stats = compute_basic_stats(doc, raw_text)
 
     return {
-        "basic_stats": compute_basic_stats(doc, raw_text),
+        "basic_stats": basic_stats,
         "readability": compute_readability(raw_text),
         "pos_distribution": compute_pos_distribution(doc),
         "named_entities": compute_named_entities(doc),
         "lexical_diversity": compute_lexical_diversity(doc),
         "keywords": extract_keywords(raw_text),
+        "passive_voice": analyze_passive_voice(doc),
+        "repeated_words": analyze_repeated_words(doc),
+        "transitions": analyze_transitions(raw_text, basic_stats["sentence_count"]),
+        "spelling": analyze_spelling(raw_text),
     }
