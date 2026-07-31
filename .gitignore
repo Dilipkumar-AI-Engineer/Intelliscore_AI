@@ -1,0 +1,44 @@
+# Environments
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Secrets
+.env
+*.env.local
+
+# Data & generated artifacts (never commit raw student essays or generated reports)
+data/raw/*
+data/processed/*
+data/uploads/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/uploads/.gitkeep
+
+reports/generated/*
+!reports/generated/.gitkeep
+
+vectorstore/*
+!vectorstore/.gitkeep
+
+# ML model artifacts (large binaries — track via Git LFS or DVC later, not plain git)
+ml/models/*.pkl
+ml/models/*.pt
+ml/models/*.bin
+*.ckpt
+
+# DB
+*.db
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
