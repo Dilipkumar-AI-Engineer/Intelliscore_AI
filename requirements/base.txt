@@ -1,3 +1,9 @@
+# ---------- Build tools ----------
+# Pinned below 81: newer setuptools removed pkg_resources, which textstat
+# (an indirect dependency below) still imports. Without this pin, textstat
+# fails to import with "ModuleNotFoundError: No module named 'pkg_resources'".
+setuptools<81
+
 # ---------- Backend ----------
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
@@ -15,7 +21,8 @@ plotly==5.24.1
 matplotlib==3.9.2
 
 # ---------- NLP ----------
-spacy==3.7.6
+spacy>=3.8,<3.9
+textstat==0.7.4
 nltk==3.9.1
 beautifulsoup4==4.12.3
 
