@@ -1,5 +1,31 @@
 # Module 4: Semantic Coherence (Sentence Embeddings)
 
+## Hardware profile this was tuned for
+
+Developed and tuned for: Intel i3-1115G4 (2 cores/4 threads), 8GB RAM,
+integrated (non-CUDA) graphics -- i.e. no GPU. On this class of hardware:
+
+- Model load (first call only): a few seconds
+- Per-essay embedding (typical 15-30 sentence essay): well under 1 second
+- Peak RAM added by this module: roughly 200-400MB (model weights +
+  working memory), which should fit comfortably alongside FastAPI,
+  Streamlit, and spaCy running at the same time in your 8GB budget
+
+If you notice heavy slowdown or memory pressure, close other
+applications (especially the browser tabs Streamlit/FastAPI opened) --
+8GB total RAM leaves limited headroom when several dev tools run
+simultaneously (Antigravity IDE + terminals + browser + Python
+processes all compete for the same RAM).
+
+This is exactly why Module 4 uses `all-MiniLM-L6-v2` instead of raw
+DeBERTa-v3-base: DeBERTa is ~10x larger and would be noticeably slower
+and tighter on RAM on this machine, for no coherence-scoring benefit
+(MiniLM is purpose-trained for similarity; DeBERTa isn't). Fine-tuning
+DeBERTa is not realistic on this hardware at all -- see the laptop
+compatibility discussion from Module 4's planning conversation. If a
+DeBERTa fine-tuning story is wanted later for the report, that would run
+on a free cloud GPU (e.g. Google Colab), not locally.
+
 ## Why this module needs local testing
 
 Everything in Modules 1-3 was tested end-to-end in the development sandbox.

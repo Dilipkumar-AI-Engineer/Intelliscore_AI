@@ -11,6 +11,13 @@ for exactly that, which is why they're the right tool for coherence
 scoring specifically (a true DeBERTa fine-tuning path, for an
 end-to-end learned scorer, is deferred -- see Module 4 notes).
 
+Hardware note: this model (and device="cpu" below) was deliberately
+chosen to run comfortably on modest hardware -- e.g. a dual-core laptop
+CPU with 8GB RAM and integrated (non-CUDA) graphics. MiniLM's ~80MB of
+weights and 384-dim output keep both load time and per-essay inference
+memory low. Explicitly pinning device="cpu" avoids PyTorch spending time
+probing for a CUDA GPU that doesn't exist on this kind of machine.
+
 Like ml/nlp/preprocessing.py's spaCy loader, this model is loaded ONCE
 and reused -- loading model weights from disk is expensive and must not
 happen per-essay.
@@ -32,7 +39,15 @@ def get_embedding_model():
     """
     global _model
     if _model is None:
+        import torch
         from sentence_transformers import SentenceTransformer
 
-        _model = SentenceTransformer(EMBEDDING_MODEL_NAME)
+        # Match thread count to physical cores. PyTorch defaults to
+        # spawning threads equal to ALL logical cores, which on a 2-core/
+        # 4-thread CPU causes more contention/context-switching overhead
+        # than benefit for a model this small. 2 threads is the sweet spot
+        # for this hardware profile; raise it if running on a beefier machine.
+        torch.set_num_threads(2)
+
+        _model = SentenceTransformer(EMBEDDING_MODEL_NAME, device="cpu")
     return _model

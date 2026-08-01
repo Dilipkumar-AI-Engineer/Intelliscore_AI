@@ -31,7 +31,12 @@ def analyze_semantic_coherence(raw_text: str) -> dict:
         }
 
     model = get_embedding_model()
-    embeddings = model.encode(sentences)
+    # batch_size=8 and show_progress_bar=False: on a 2-core/8GB laptop,
+    # encoding all sentences in one giant batch (the default behavior)
+    # can spike memory unnecessarily for longer essays. Small batches
+    # keep peak memory low with a negligible speed cost for essay-length
+    # documents (tens of sentences, not thousands).
+    embeddings = model.encode(sentences, batch_size=8, show_progress_bar=False)
 
     return {
         "sentence_count_analyzed": len(sentences),
