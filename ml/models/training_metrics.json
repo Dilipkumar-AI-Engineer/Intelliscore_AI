@@ -1,0 +1,7 @@
+{
+  "mae": 4.195,
+  "rmse": 5.395,
+  "r2": 0.821,
+  "train_samples": 400,
+  "test_samples": 100
+}
