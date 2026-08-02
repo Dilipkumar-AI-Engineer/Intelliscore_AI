@@ -1,19 +1,25 @@
 """
 FastAPI application entrypoint.
-
-For now this only proves the scaffolding works: config loads from .env,
-the app boots, and a health check responds. Real routers (auth, essays,
-analysis, etc.) get registered here in later modules via app.include_router().
 """
 
 from fastapi import FastAPI
 
+from app.api.v1.routes import auth
 from app.core.config import settings
+from app.db.session import Base, engine
+
+# Create tables if they don't exist. Fine for SQLite/dev; a real
+# production setup would use Alembic migrations instead of this, since
+# create_all() can't handle schema CHANGES to existing tables -- only
+# creating new ones. Flagged here as a known simplification for now.
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title=settings.app_name,
     debug=settings.debug,
 )
+
+app.include_router(auth.router)
 
 
 @app.get("/health")

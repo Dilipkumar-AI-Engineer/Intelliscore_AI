@@ -13,6 +13,11 @@ python-dotenv==1.0.1
 sqlalchemy==2.0.35
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
+# Pinned: passlib's bcrypt backend detection breaks on bcrypt>=4.1
+# (looks for a __about__.__version__ attribute that was removed).
+bcrypt==4.0.1
+# Required for Pydantic's EmailStr type -- not bundled with pydantic by default.
+email-validator==2.2.0
 python-multipart==0.0.9
 
 # ---------- Frontend ----------
