@@ -42,10 +42,11 @@ transformers==4.44.2
 sentence-transformers==3.1.1
 
 # ---------- OCR & Documents ----------
-easyocr==1.7.2
+easyocr==1.7.1
 pymupdf==1.24.10
 python-docx==1.1.2
 pdfplumber==0.11.4
+pillow
 
 # ---------- Reports ----------
 reportlab==4.2.2

@@ -8,50 +8,10 @@ never touches or pollutes your real development database.
 Run with: pytest backend/tests/test_auth.py -v
 """
 
-import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
 
-from app.db.session import Base, get_db
 from app.main import app
-
-# In-memory SQLite: fast, isolated, destroyed automatically after tests.
-# StaticPool is REQUIRED here: by default, SQLAlchemy opens a new
-# connection per session, and `sqlite:///:memory:` gives each new
-# connection its OWN separate empty database -- tables created in one
-# session would be invisible to the next. StaticPool forces every
-# session to reuse the same single connection, so they all see the same
-# in-memory database.
-TEST_DATABASE_URL = "sqlite:///:memory:"
-test_engine = create_engine(
-    TEST_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
-
-
-def override_get_db():
-    """Swap the real DB session for the test one, for the duration of tests."""
-    db = TestSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = override_get_db
-
-
-@pytest.fixture(autouse=True)
-def setup_and_teardown_db():
-    """Create fresh tables before each test, drop them after -- full isolation."""
-    Base.metadata.create_all(bind=test_engine)
-    yield
-    Base.metadata.drop_all(bind=test_engine)
-
+from tests.conftest import TestSessionLocal
 
 client = TestClient(app)
 

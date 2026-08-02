@@ -4,7 +4,7 @@ FastAPI application entrypoint.
 
 from fastapi import FastAPI
 
-from app.api.v1.routes import auth
+from app.api.v1.routes import auth, essays
 from app.core.config import settings
 from app.db.session import Base, engine
 
@@ -20,6 +20,7 @@ app = FastAPI(
 )
 
 app.include_router(auth.router)
+app.include_router(essays.router)
 
 
 @app.get("/health")
