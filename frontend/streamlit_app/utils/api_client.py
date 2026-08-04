@@ -118,3 +118,14 @@ def get_essay(essay_id: int) -> dict:
         timeout=DEFAULT_TIMEOUT_SECONDS,
     )
     return _handle_response(response)
+
+
+def analyze_essay(essay_id: int) -> dict:
+    """Runs the full ml pipeline server-side (Modules 1-3 + 8) and returns
+    scores + detailed features. Longer timeout: model inference isn't instant."""
+    response = requests.post(
+        f"{BACKEND_URL}/api/v1/essays/{essay_id}/analyze",
+        headers=_auth_headers(),
+        timeout=60,
+    )
+    return _handle_response(response)

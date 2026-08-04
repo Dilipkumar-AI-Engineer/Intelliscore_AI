@@ -10,7 +10,8 @@ from app.core.deps import get_current_user
 from app.db.session import get_db
 from app.models.essay import Essay
 from app.models.user import User
-from app.schemas.essay import EssayDetailResponse, EssayResponse
+from app.schemas.essay import EssayAnalysisResponse, EssayDetailResponse, EssayResponse
+from app.services.analysis_service import AnalysisError, analyze_essay
 from app.services.essay_service import EssayUploadError, process_essay_upload
 
 router = APIRouter(prefix="/api/v1/essays", tags=["essays"])
@@ -58,3 +59,20 @@ def get_essay(
         # identical login-error-message decision).
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Essay not found")
     return essay
+
+
+@router.post("/{essay_id}/analyze", response_model=EssayAnalysisResponse)
+def analyze_essay_endpoint(
+    essay_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    essay = db.query(Essay).filter(Essay.id == essay_id).first()
+    if essay is None or essay.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Essay not found")
+
+    try:
+        result = analyze_essay(db, essay)
+    except AnalysisError as e:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(e))
+    return result
