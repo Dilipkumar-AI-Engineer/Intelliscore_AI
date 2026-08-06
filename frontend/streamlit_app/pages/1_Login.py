@@ -1,10 +1,12 @@
 import streamlit as st
 
 from utils.api_client import APIError, login
+from utils.layout import render_sidebar
 from utils.session import init_session_state, is_authenticated, log_in
 
 st.set_page_config(page_title="Log In - IntelliScore AI", page_icon="🔐", layout="centered")
 init_session_state()
+render_sidebar()
 
 st.title("🔐 Log In")
 

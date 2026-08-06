@@ -5,6 +5,7 @@ is the app's home/entrypoint). Sidebar pages come from pages/*.py.
 
 import streamlit as st
 
+from utils.layout import render_sidebar
 from utils.session import init_session_state, is_authenticated
 
 st.set_page_config(
@@ -15,6 +16,7 @@ st.set_page_config(
 )
 
 init_session_state()
+render_sidebar()
 
 # Custom CSS: dark theme with purple/blue gradients, per the project's
 # design spec. Streamlit's default theme is light -- this overrides it

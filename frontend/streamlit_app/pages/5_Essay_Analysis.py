@@ -2,10 +2,12 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from utils.api_client import APIError, analyze_essay, get_essay, list_essays
+from utils.layout import render_sidebar
 from utils.session import require_login
 
 st.set_page_config(page_title="Essay Analysis - IntelliScore AI", page_icon="📊", layout="wide")
 require_login()
+render_sidebar()
 
 # Consistent with Home.py's dark gradient theme.
 st.markdown(

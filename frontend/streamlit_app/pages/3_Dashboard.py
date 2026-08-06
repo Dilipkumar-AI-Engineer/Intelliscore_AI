@@ -2,10 +2,12 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from utils.api_client import APIError, list_essays
-from utils.session import log_out, require_login
+from utils.layout import render_sidebar
+from utils.session import require_login
 
 st.set_page_config(page_title="Dashboard - IntelliScore AI", page_icon="📊", layout="wide")
 require_login()  # halts execution here if not logged in
+render_sidebar()
 
 st.markdown(
     """
@@ -17,15 +19,8 @@ st.markdown(
 )
 
 user = st.session_state.user
-
-col1, col2 = st.columns([4, 1])
-with col1:
-    st.title(f"Welcome back, {user['full_name']} 👋")
-    st.caption(f"{user['email']} · {user['role'].capitalize()}")
-with col2:
-    if st.button("Log Out", use_container_width=True):
-        log_out()
-        st.rerun()
+st.title(f"Welcome back, {user['full_name']} 👋")
+st.caption(f"{user['email']} · {user['role'].capitalize()}")
 
 st.divider()
 
@@ -52,29 +47,69 @@ stat_cols[3].metric("Total Words Analyzed", f"{total_words:,}")
 
 st.divider()
 
-# ---------- Score trend chart ----------
-if len(analyzed_essays) >= 1:
-    st.subheader("Score Trend")
-    sorted_essays = sorted(analyzed_essays, key=lambda e: e["created_at"])
-    fig = go.Figure(
-        go.Scatter(
-            x=[e["created_at"][:10] for e in sorted_essays],
-            y=[e["overall_score"] for e in sorted_essays],
-            mode="lines+markers",
-            line=dict(color="#a78bfa", width=3),
-            marker=dict(color="#60a5fa", size=8),
+# ---------- Score trend + distribution ----------
+if analyzed_essays:
+    trend_col, dist_col = st.columns([2, 1])
+
+    with trend_col:
+        st.subheader("Score Trend")
+        sorted_essays = sorted(analyzed_essays, key=lambda e: e["created_at"])
+        fig = go.Figure(
+            go.Scatter(
+                x=[e["created_at"][:10] for e in sorted_essays],
+                y=[e["overall_score"] for e in sorted_essays],
+                mode="lines+markers",
+                line=dict(color="#a78bfa", width=3),
+                marker=dict(color="#60a5fa", size=8),
+            )
         )
-    )
-    fig.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        font={"color": "#c4c4d4"},
-        yaxis=dict(range=[0, 100], gridcolor="rgba(255,255,255,0.1)"),
-        xaxis=dict(gridcolor="rgba(255,255,255,0.1)"),
-        height=300,
-        margin=dict(l=20, r=20, t=20, b=20),
-    )
-    st.plotly_chart(fig, use_container_width=True)
+        fig.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font={"color": "#c4c4d4"},
+            yaxis=dict(range=[0, 100], gridcolor="rgba(255,255,255,0.1)"),
+            xaxis=dict(gridcolor="rgba(255,255,255,0.1)"),
+            height=300,
+            margin=dict(l=20, r=20, t=20, b=20),
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    with dist_col:
+        st.subheader("Score Distribution")
+        buckets = {"0-20": 0, "21-40": 0, "41-60": 0, "61-80": 0, "81-100": 0}
+        for e in analyzed_essays:
+            score = e["overall_score"]
+            if score <= 20:
+                buckets["0-20"] += 1
+            elif score <= 40:
+                buckets["21-40"] += 1
+            elif score <= 60:
+                buckets["41-60"] += 1
+            elif score <= 80:
+                buckets["61-80"] += 1
+            else:
+                buckets["81-100"] += 1
+        pie_fig = go.Figure(
+            go.Pie(
+                labels=list(buckets.keys()),
+                values=list(buckets.values()),
+                hole=0.55,
+                marker=dict(colors=["#ef4444", "#f59e0b", "#eab308", "#60a5fa", "#a78bfa"]),
+            )
+        )
+        pie_fig.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            font={"color": "#c4c4d4"},
+            height=300,
+            margin=dict(l=10, r=10, t=10, b=10),
+            showlegend=True,
+            legend=dict(orientation="h", y=-0.1),
+        )
+        st.plotly_chart(pie_fig, use_container_width=True)
+
+    st.divider()
+else:
+    st.info("Score trend and distribution charts will appear here once you've analyzed at least one essay.")
     st.divider()
 
 # ---------- Quick actions ----------

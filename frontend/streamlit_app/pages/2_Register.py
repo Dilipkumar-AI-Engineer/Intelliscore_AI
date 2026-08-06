@@ -1,10 +1,12 @@
 import streamlit as st
 
 from utils.api_client import APIError, register
+from utils.layout import render_sidebar
 from utils.session import init_session_state, is_authenticated
 
 st.set_page_config(page_title="Register - IntelliScore AI", page_icon="📝", layout="centered")
 init_session_state()
+render_sidebar()
 
 st.title("📝 Create Your Account")
 

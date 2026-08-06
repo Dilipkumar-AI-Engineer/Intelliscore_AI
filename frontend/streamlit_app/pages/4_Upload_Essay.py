@@ -1,10 +1,12 @@
 import streamlit as st
 
 from utils.api_client import APIError, upload_essay
+from utils.layout import render_sidebar
 from utils.session import require_login
 
-st.set_page_config(page_title="Upload Essay - IntelliScore AI", page_icon="⬆️", layout="centered")
+st.set_page_config(page_title="Upload Essay - IntelliScore AI", page_icon="⬆️", layout="wide")
 require_login()
+render_sidebar()
 
 st.title("⬆️ Upload an Essay")
 st.caption("Supported formats: PDF, DOCX, TXT, PNG, JPG (images are read via OCR)")
