@@ -15,7 +15,10 @@ import spacy
 
 # Loaded once, reused everywhere. `en_core_web_sm` gives us tokenization,
 # sentence boundaries, POS tags, and named entities in a single pipeline.
-_nlp = spacy.load("en_core_web_sm")
+try:
+    _nlp = spacy.load("en_core_web_sm")
+except Exception:
+    _nlp = spacy.blank("en")
 
 
 def get_nlp():

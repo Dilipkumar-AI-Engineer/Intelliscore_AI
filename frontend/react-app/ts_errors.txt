@@ -1,0 +1,14 @@
+src/lib/reportGenerator.ts(91,75): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/lib/reportGenerator.ts(177,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/lib/reportGenerator.ts(183,43): error TS7006: Parameter 'w' implicitly has an 'any' type.
+src/lib/reportGenerator.ts(189,34): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/pages/AIWritingMentorPage.tsx(3,78): error TS6133: 'HelpCircle' is declared but its value is never read.
+src/pages/AIWritingMentorPage.tsx(3,90): error TS6133: 'FileCheck' is declared but its value is never read.
+src/pages/AIWritingMentorPage.tsx(3,101): error TS6133: 'Edit3' is declared but its value is never read.
+src/pages/AnalyticsPage.tsx(57,48): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/pages/AnalyticsPage.tsx(58,46): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/pages/CompareEssaysPage.tsx(6,17): error TS6133: 'CheckCircle2' is declared but its value is never read.
+src/pages/CompareEssaysPage.tsx(6,31): error TS6133: 'TrendingUp' is declared but its value is never read.
+src/pages/EssayAnalysisPage.tsx(3,89): error TS6133: 'Layers' is declared but its value is never read.
+src/pages/EssayAnalysisPage.tsx(3,97): error TS6133: 'RefreshCw' is declared but its value is never read.
+src/pages/EssayAnalysisPage.tsx(110,18): error TS7006: Parameter 'prev' implicitly has an 'any' type.

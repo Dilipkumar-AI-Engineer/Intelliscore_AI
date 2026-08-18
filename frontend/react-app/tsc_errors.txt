@@ -1,0 +1,13 @@
+src/lib/reportGenerator.ts(20,5): error TS6133: 'NumberFormat' is declared but its value is never read.
+src/lib/reportGenerator.ts(320,48): error TS2353: Object literal may only specify known properties, and 'top' does not exist in type 'ISpacingProperties'.
+src/lib/reportGenerator.ts(326,48): error TS2353: Object literal may only specify known properties, and 'top' does not exist in type 'ISpacingProperties'.
+src/lib/reportGenerator.ts(399,46): error TS2345: Argument of type '{ data: ArrayBuffer; transformation: { width: number; height: number; }; }' is not assignable to parameter of type 'IImageOptions'.
+  Type '{ data: ArrayBuffer; transformation: { width: number; height: number; }; }' is not assignable to type 'SvgMediaOptions & CoreImageOptions'.
+    Type '{ data: ArrayBuffer; transformation: { width: number; height: number; }; }' is missing the following properties from type 'SvgMediaOptions': type, fallback
+src/lib/reportGenerator.ts(421,46): error TS2345: Argument of type '{ data: ArrayBuffer; transformation: { width: number; height: number; }; }' is not assignable to parameter of type 'IImageOptions'.
+  Type '{ data: ArrayBuffer; transformation: { width: number; height: number; }; }' is not assignable to type 'SvgMediaOptions & CoreImageOptions'.
+    Type '{ data: ArrayBuffer; transformation: { width: number; height: number; }; }' is missing the following properties from type 'SvgMediaOptions': type, fallback
+src/lib/reportGenerator.ts(658,24): error TS2353: Object literal may only specify known properties, and 'top' does not exist in type 'ISpacingProperties'.
+src/lib/reportGenerator.ts(665,24): error TS2353: Object literal may only specify known properties, and 'top' does not exist in type 'ISpacingProperties'.
+src/pages/EssayAnalysisPage.tsx(638,98): error TS2322: Type '{ children: Element[]; key: any; padding: string; className: string; style: { borderLeftColor: string; }; }' is not assignable to type 'IntrinsicAttributes & GlassCardProps'.
+  Property 'style' does not exist on type 'IntrinsicAttributes & GlassCardProps'.

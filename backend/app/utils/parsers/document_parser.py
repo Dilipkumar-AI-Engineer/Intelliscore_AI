@@ -13,7 +13,7 @@ from app.utils.parsers.image_ocr_parser import extract_text_from_image
 from app.utils.parsers.pdf_parser import extract_text_from_pdf
 from app.utils.parsers.txt_parser import extract_text_from_txt
 
-SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".txt", ".png", ".jpg", ".jpeg"}
+SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".txt", ".png", ".jpg", ".jpeg", ".webp"}
 
 # Below this character count, a "successfully" extracted PDF is treated
 # as suspicious -- likely a SCANNED PDF with no real text layer (just
@@ -51,15 +51,10 @@ def extract_text(file_path: str, filename: str) -> str:
     if extension == ".pdf":
         text = extract_text_from_pdf(file_path)
         if len(text) < MIN_PDF_TEXT_LENGTH_BEFORE_OCR_FALLBACK:
-            # Likely a scanned PDF with no text layer -- but PyMuPDF can
-            # also render PDF pages AS images for OCR fallback. That
-            # render-to-image step is a reasonable Module 6+ enhancement;
-            # for now we surface a clear error rather than silently
-            # returning near-empty text.
             raise EmptyDocumentError(
                 "This PDF appears to have no extractable text layer "
                 "(likely a scanned document). Try uploading it as an "
-                "image (PNG/JPG) instead, so OCR can be used."
+                "image (PNG/JPG/WEBP) instead, so OCR can be used."
             )
         return text
 
@@ -67,7 +62,7 @@ def extract_text(file_path: str, filename: str) -> str:
         text = extract_text_from_docx(file_path)
     elif extension == ".txt":
         text = extract_text_from_txt(file_path)
-    else:  # .png, .jpg, .jpeg
+    else:  # .png, .jpg, .jpeg, .webp
         text = extract_text_from_image(file_path)
 
     if not text or not text.strip():

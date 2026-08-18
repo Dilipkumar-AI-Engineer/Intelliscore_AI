@@ -36,3 +36,19 @@ def get_current_user(
         raise credentials_exception
 
     return user
+
+
+def require_role(allowed_roles: list[str]):
+    """Dependency generator to restrict route access to specific roles."""
+    def role_checker(current_user: User = Depends(get_current_user)) -> User:
+        user_role = (current_user.role or "").lower()
+        normalized_allowed = [r.lower() for r in allowed_roles]
+        if "admin" in normalized_allowed and "administrator" not in normalized_allowed:
+            normalized_allowed.append("administrator")
+        if user_role not in normalized_allowed:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Access forbidden: User role '{user_role}' is not authorized for this operation.",
+            )
+        return current_user
+    return role_checker

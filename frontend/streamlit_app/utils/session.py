@@ -29,6 +29,18 @@ def log_in(access_token: str, user: dict):
     st.session_state.user = user
 
 
+def demo_login():
+    """Populate session with a mock user so all protected pages work
+    without the FastAPI backend running. Useful for offline demos."""
+    st.session_state.access_token = "demo_token_offline"
+    st.session_state.user = {
+        "id": 0,
+        "full_name": "Dilip Kumar",
+        "email": "dilip@demo.intelliscore.ai",
+        "role": "student",
+    }
+
+
 def log_out():
     st.session_state.access_token = None
     st.session_state.user = None

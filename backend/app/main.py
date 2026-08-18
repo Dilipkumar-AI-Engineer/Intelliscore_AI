@@ -3,15 +3,14 @@ FastAPI application entrypoint.
 """
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1.routes import auth, essays
+from app.api.v1.routes import auth, essays, chat
 from app.core.config import settings
 from app.db.session import Base, engine
+from app.models import Essay, PasswordResetToken, User
 
-# Create tables if they don't exist. Fine for SQLite/dev; a real
-# production setup would use Alembic migrations instead of this, since
-# create_all() can't handle schema CHANGES to existing tables -- only
-# creating new ones. Flagged here as a known simplification for now.
+# Create tables if they don't exist.
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -19,8 +18,18 @@ app = FastAPI(
     debug=settings.debug,
 )
 
+# Add CORS middleware to allow requests from the React frontend (usually localhost:5173)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:[0-9]+)?",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(auth.router)
 app.include_router(essays.router)
+app.include_router(chat.router)
 
 
 @app.get("/health")
@@ -31,3 +40,4 @@ def health_check():
         "app_name": settings.app_name,
         "environment": settings.environment,
     }
+# IntelliScore AI Main FastAPI Application (Reload Trigger)

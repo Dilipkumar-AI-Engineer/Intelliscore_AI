@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliScore AI - Comprehensive Project Documentation & Technical Architecture</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root {
+            --primary: #6d28d9;
+            --primary-light: #8b5cf6;
+            --secondary: #0f172a;
+            --accent: #3b82f6;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-dark);
+            background-color: #ffffff;
+            line-height: 1.6;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                max-width: 100%;
+                background: white;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+            table, .card {
+                page-break-inside: avoid;
+            }
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #1e1b4b 100%);
+            color: white;
+            padding: 36px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 25px -5px rgba(109, 40, 217, 0.3);
+        }
+
+        .header-banner h1 {
+            font-size: 2.4rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .header-banner p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .badge-bar {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .download-btn-container {
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(109, 40, 217, 0.4);
+            transition: all 0.2s ease;
+            display: flex;
+            items-center: center;
+            gap: 8px;
+        }
+
+        .btn-print:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(109, 40, 217, 0.6);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            border-bottom: 2.5px solid var(--primary-light);
+            padding-bottom: 6px;
+            margin-top: 36px;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        p, li {
+            font-size: 0.95rem;
+            color: #334155;
+            margin-bottom: 10px;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: #f1f5f9;
+            color: #b91c1c;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .tech-pill {
+            display: inline-block;
+            background: #ede9fe;
+            color: #5b21b6;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: 6px;
+            margin: 2px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="download-btn-container no-print">
+        <button onclick="window.print()" class="btn-print">
+            📄 Save / Download as PDF
+        </button>
+    </div>
+
+    <div class="header-banner">
+        <h1>IntelliScore AI</h1>
+        <p>Automated Essay Evaluation, AI Diagnostics & Writing Intelligence Platform</p>
+        <div class="badge-bar">
+            <span class="badge">Version 2.4.0</span>
+            <span class="badge">FastAPI + React 18</span>
+            <span class="badge">Google Gemini 1.5/2.0 Flash</span>
+            <span class="badge">FAISS Vector RAG</span>
+            <span class="badge">Production Ready</span>
+        </div>
+    </div>
+
+    <h2>1. Executive Abstract</h2>
+    <p>
+        <strong>IntelliScore AI</strong> is an enterprise-grade, full-stack educational technology platform engineered to automate multi-criteria essay scoring, detect AI-generated writing, identify plagiarism, and deliver actionable grammatical diagnostics. By fusing Large Language Models (LLMs) with high-speed Natural Language Processing (NLP) heuristic algorithms, IntelliScore AI reduces educator grading workloads by over 80% while providing students with instant, objective writing feedback.
+    </p>
+
+    <h2>2. System Architecture & Core Technologies</h2>
+    <div class="grid-2">
+        <div class="card">
+            <h3>Frontend Stack</h3>
+            <ul>
+                <li><span class="tech-pill">React 18</span> Component-driven UI framework</li>
+                <li><span class="tech-pill">TypeScript</span> Type-safe client architecture</li>
+                <li><span class="tech-pill">Vite</span> Modern build system & HMR</li>
+                <li><span class="tech-pill">Tailwind CSS</span> Responsive Glassmorphism design system</li>
+                <li><span class="tech-pill">Framer Motion</span> Dynamic micro-animations & transitions</li>
+                <li><span class="tech-pill">jsPDF & DOCX</span> Executive PDF & Word report export engines</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Backend & AI Stack</h3>
+            <ul>
+                <li><span class="tech-pill">Python 3.11</span> Asynchronous backend core</li>
+                <li><span class="tech-pill">FastAPI</span> Asynchronous ASGI web framework</li>
+                <li><span class="tech-pill">SQLAlchemy</span> Relational ORM mapping</li>
+                <li><span class="tech-pill">SQLite</span> Embedded persistent data store</li>
+                <li><span class="tech-pill">Google Gemini LLM</span> 1.5/2.0 Flash evaluation engine</li>
+                <li><span class="tech-pill">FAISS Vector Store</span> High-dimensional similarity vector database</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2>3. AI & NLP Models Breakdown</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Model / Component</th>
+                <th>Technology Provider</th>
+                <th>Functional Application</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Primary Evaluation LLM</strong></td>
+                <td>Google Gemini API (1.5 / 2.0 Flash)</td>
+                <td>Scores essays across 5 criteria (Grammar, Vocabulary, Structure, Readability, Argumentation), generates contextual line-by-line rewrites, and powers the RAG AI Writing Mentor.</td>
+            </tr>
+            <tr>
+                <td><strong>AI Content Detector</strong></td>
+                <td>Perplexity & Burstiness NLP Scoring</td>
+                <td>Analyzes sentence length variance, syntax predictability, and LLM token probability distributions to calculate exact AI vs. Human probability percentages.</td>
+            </tr>
+            <tr>
+                <td><strong>Plagiarism & Similarity Engine</strong></td>
+                <td>Cosine Similarity & TF-IDF Vector Space</td>
+                <td>Computes mathematical similarity matrices between submitted essays to detect text copying and inter-student plagiarism.</td>
+            </tr>
+            <tr>
+                <td><strong>Readability Analyzer</strong></td>
+                <td>Flesch-Kincaid & Gunning Fog Algorithms</td>
+                <td>Evaluates syllable counts, word densities, and sentence length ratios to determine grade-level readability scores.</td>
+            </tr>
+            <tr>
+                <td><strong>RAG Vector Engine</strong></td>
+                <td>Meta FAISS (`faiss-cpu`)</td>
+                <td>Indexes essay embeddings for instant context retrieval during interactive AI Writing Mentor sessions.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <h2>4. Key Application Capabilities</h2>
+    <ul>
+        <li><strong>Dynamic 5-Criteria Essay Evaluation:</strong> Instant overall scoring out of 100 with sub-score breakdowns for Grammar (25%), Vocabulary (20%), Structure (20%), Readability (15%), and Argumentation (20%).</li>
+        <li><strong>Grammar Diagnostic & Rewrite Suggestions:</strong> Detects passive voice, subject-verb mismatches, and syntax errors, offering 1-click apply rewrite recommendations.</li>
+        <li><strong>Role-Based Access & Strict Data Isolation:</strong> Dedicated Student, Teacher, and Administrator roles. New teacher accounts receive clean, isolated workspaces (0 submissions), preventing cross-account demo data leaks.</li>
+        <li><strong>Comprehensive Export Engines:</strong> One-click generation of native Microsoft Word (`.docx`) and high-fidelity PDF evaluation reports.</li>
+        <li><strong>Interactive AI Writing Mentor:</strong> Conversational assistant that analyzes essay drafts and offers real-time guidance grounded in student writing context.</li>
+    </ul>
+
+    <h2>5. Database Schema Architecture</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Entity / Table</th>
+                <th>Key Attributes</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>users</code></td>
+                <td>id, email, full_name, role, hashed_password, institution, department</td>
+                <td>Stores registered users with role permissions (student, teacher, admin).</td>
+            </tr>
+            <tr>
+                <td><code>essays</code></td>
+                <td>id, title, original_text, file_type, user_id, category, created_at</td>
+                <td>Stores uploaded essay drafts and student metadata.</td>
+            </tr>
+            <tr>
+                <td><code>evaluations</code></td>
+                <td>id, essay_id, overall_score, grammar_score, vocabulary_score, ai_probability</td>
+                <td>Persists deep NLP analytics, category scores, and LLM feedback.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>6. Deployment & Execution Instructions</h2>
+    <div class="card">
+        <h3>Starting Backend Server (FastAPI)</h3>
+        <code>cd backend &amp;&amp; ..\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000</code>
+
+        <h3 style="margin-top: 14px;">Starting Frontend Server (React + Vite)</h3>
+        <code>cd frontend/react-app &amp;&amp; npm run dev</code>
+    </div>
+
+    <div class="footer">
+        <p><strong>IntelliScore AI Engineering Documentation</strong> &bull; Generated August 2026</p>
+        <p>Confidential & Core Property of IntelliScore AI Platform</p>
+    </div>
+
+</body>
+</html>

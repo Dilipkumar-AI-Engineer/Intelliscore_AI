@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.models.essay import Essay
+from app.services.category_classifier import classify_essay_category
 from app.utils.parsers.document_parser import extract_text
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[3]
@@ -65,15 +66,54 @@ def process_essay_upload(
     word_count = len(raw_text.split())
     extension = pathlib.Path(original_filename).suffix.lower().lstrip(".")
 
+    title = pathlib.Path(original_filename).stem
+    category = classify_essay_category(title, raw_text)
+
     essay = Essay(
         user_id=user_id,
-        title=pathlib.Path(original_filename).stem,
+        title=title,
         original_filename=original_filename,
         file_type=extension,
         raw_text=raw_text,
         word_count=word_count,
+        category=category,
     )
     db.add(essay)
     db.commit()
     db.refresh(essay)
     return essay
+
+
+def process_text_paste(
+    db: Session, user_id: int, text: str, title: str | None = None
+) -> Essay:
+    """
+    Process direct text copy/paste submission (Method 2).
+    """
+    clean_text = text.strip()
+    if not clean_text:
+        raise EssayUploadError("Pasted essay text cannot be empty.")
+
+    words = clean_text.split()
+    word_count = len(words)
+    if word_count < 5:
+        raise EssayUploadError("Essay text is too short (minimum 5 words required for analysis).")
+
+    essay_title = title.strip() if title and title.strip() else f"Pasted Essay ({words[0]} {words[1]}...)"
+    original_filename = f"{essay_title.lower().replace(' ', '_')[:30]}.txt"
+    category = classify_essay_category(essay_title, clean_text)
+
+    essay = Essay(
+        user_id=user_id,
+        title=essay_title,
+        original_filename=original_filename,
+        file_type="txt",
+        raw_text=clean_text,
+        word_count=word_count,
+        category=category,
+    )
+    db.add(essay)
+    db.commit()
+    db.refresh(essay)
+    return essay
+

@@ -7,6 +7,10 @@ Built as a final-year B.Tech AI & Data Science project, using production
 software engineering practices: modular architecture, config-driven secrets,
 tested increments per module.
 
+- **Developer:** [Dilipkumar (Dilipkumar-AI-Engineer)](https://github.com/Dilipkumar-AI-Engineer)
+- **Repository:** [https://github.com/Dilipkumar-AI-Engineer/intelliscore-ai](https://github.com/Dilipkumar-AI-Engineer/intelliscore-ai)
+
+
 ## Tech Stack
 
 - **Backend:** FastAPI, SQLAlchemy, JWT auth

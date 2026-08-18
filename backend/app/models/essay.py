@@ -23,6 +23,7 @@ class Essay(Base):
     file_type: Mapped[str] = mapped_column(String(10), nullable=False)  # pdf/docx/txt/png/jpg
     raw_text: Mapped[str] = mapped_column(Text, nullable=False)
     word_count: Mapped[int] = mapped_column(Integer, default=0)
+    category: Mapped[str] = mapped_column(String(100), default="General Essay", nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=lambda: datetime.now(timezone.utc)
     )

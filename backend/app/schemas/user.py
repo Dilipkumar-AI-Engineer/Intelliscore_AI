@@ -23,6 +23,8 @@ class UserRegister(BaseModel):
     password: str
     full_name: str
     role: UserRole = UserRole.STUDENT
+    institution: str | None = None
+    department: str | None = None
 
     @field_validator("password")
     @classmethod
@@ -47,12 +49,21 @@ class UserLogin(BaseModel):
     password: str
 
 
+class UserUpdate(BaseModel):
+    full_name: str | None = None
+    role: UserRole | None = None
+    institution: str | None = None
+    department: str | None = None
+
+
 class UserResponse(BaseModel):
     """What we send BACK to the client -- notice: no password field at all."""
     id: int
     email: str
     full_name: str
     role: str
+    institution: str | None = None
+    department: str | None = None
     created_at: datetime
 
     class Config:
@@ -63,3 +74,24 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+    @field_validator("new_password")
+    @classmethod
+    def password_strength(cls, value: str) -> str:
+        if len(value) < 8:
+            raise ValueError("Password must be at least 8 characters long")
+        if not re.search(r"[A-Za-z]", value):
+            raise ValueError("Password must contain at least one letter")
+        if not re.search(r"[0-9]", value):
+            raise ValueError("Password must contain at least one number")
+        return value
+
