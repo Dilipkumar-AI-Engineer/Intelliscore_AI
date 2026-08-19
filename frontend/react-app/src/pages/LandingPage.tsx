@@ -99,7 +99,7 @@ const NAV_LINKS = [
 
 export default function LandingPage() {
     const navigate = useNavigate()
-    const { isAuthenticated, user } = useAuth()
+    const { isAuthenticated } = useAuth()
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -140,19 +140,8 @@ export default function LandingPage() {
 
                 {/* Desktop Auth CTAs */}
                 <div className="hidden items-center gap-3 md:flex">
-                    {isAuthenticated ? (
-                        <>
-                            <span className="text-xs text-purple-300 font-medium mr-1">Hi, {user?.fullName?.split(' ')[0] || 'Student'}</span>
-                            <button onClick={() => navigate('/dashboard')} className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5">
-                                Go to Dashboard <ArrowRight size={14} />
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <Link to="/login" className="btn-ghost text-xs py-2 px-4">Login</Link>
-                            <Link to="/register" className="btn-primary text-xs py-2 px-4">Sign Up Free</Link>
-                        </>
-                    )}
+                    <Link to="/login" className="btn-ghost text-xs py-2 px-4">Login</Link>
+                    <Link to="/register" className="btn-primary text-xs py-2 px-4">Sign Up Free</Link>
                 </div>
 
                 {/* Mobile Menu Toggle */}
@@ -177,16 +166,8 @@ export default function LandingPage() {
                             </a>
                         ))}
                         <div className="pt-2 border-t flex flex-col gap-2.5" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-                            {isAuthenticated ? (
-                                <button onClick={() => { setMobileMenuOpen(false); navigate('/dashboard'); }} className="btn-primary w-full text-xs justify-center">
-                                    Go to Dashboard
-                                </button>
-                            ) : (
-                                <>
-                                    <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="btn-ghost w-full text-center text-xs">Login</Link>
-                                    <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="btn-primary w-full text-center text-xs">Sign Up Free</Link>
-                                </>
-                            )}
+                            <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="btn-ghost w-full text-center text-xs">Login</Link>
+                            <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="btn-primary w-full text-center text-xs">Sign Up Free</Link>
                         </div>
                     </motion.div>
                 )}
