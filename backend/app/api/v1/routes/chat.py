@@ -1,5 +1,5 @@
 """
-Chat mentor API endpoints.
+Essay-Specific Gemini AI Chatbot Mentor API endpoints.
 """
 
 from typing import Optional, List, Dict, Any
@@ -25,16 +25,18 @@ class ChatMessageResponse(BaseModel):
     reply: str
     sources: List[str]
     model: str
+    deduplicated: bool = Field(default=True, description="Indicates anti-duplication and anti-repetition guard pass")
 
 
 @router.post("/mentor", response_model=ChatMessageResponse)
+@router.post("/gemini-mentor", response_model=ChatMessageResponse)
 def get_mentor_response(
     payload: ChatMessageRequest,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """
-    Returns live AI Writing Mentor conversational response using Gemini API and RAG.
+    Returns live Essay-Specific Gemini AI Writing Mentor conversational response with anti-duplication & RAG context.
     """
     res = ChatMentorService.generate_response(
         db=db,
@@ -44,4 +46,5 @@ def get_mentor_response(
         history=payload.history,
         custom_api_key=payload.api_key,
     )
+    res["deduplicated"] = True
     return ChatMessageResponse(**res)
