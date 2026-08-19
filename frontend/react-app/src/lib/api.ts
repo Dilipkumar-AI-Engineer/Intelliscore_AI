@@ -1,5 +1,5 @@
-const PRIMARY_BASE_URL = 'http://127.0.0.1:8000/api/v1';
-const FALLBACK_BASE_URL = 'http://localhost:8000/api/v1';
+const PRIMARY_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+const FALLBACK_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
 let activeBaseUrl = PRIMARY_BASE_URL;
 
 import { useState, useEffect } from 'react';

@@ -1039,7 +1039,7 @@ export async function generateReportHTML(essays: EssayData[], reportType: string
         { label: 'Readability', score: primaryEssay.readabilityScore || 80, color: '#db2777' },
     ]
 
-    const comps = rawComps.map(c => ({
+    const comps = rawComps.map((c: any) => ({
         ...c,
         label: translateCompLabel(c.label, lang)
     }))

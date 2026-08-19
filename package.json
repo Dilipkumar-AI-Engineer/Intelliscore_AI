@@ -1,0 +1,9 @@
+{
+    "name": "intelliscore-ai-root",
+    "private": true,
+    "version": "1.0.0",
+    "scripts": {
+        "postinstall": "cd frontend/react-app && npm install",
+        "build": "cd frontend/react-app && npm run build"
+    }
+}

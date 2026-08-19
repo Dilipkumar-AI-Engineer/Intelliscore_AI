@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Download, ArrowLeft, FileText, Pin, PinOff, Check, X, Sparkles, AlertTriangle, Info, HelpCircle, CheckCircle2, Copy } from 'lucide-react'
+import { Download, ArrowLeft, FileText, Pin, PinOff, X, Sparkles, AlertTriangle, Info, HelpCircle, CheckCircle2, Copy } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import GlassCard from '@/components/GlassCard'
@@ -243,7 +243,7 @@ export default function EssayAnalysisPage() {
                 if (sugg === orig) {
                     sugg = orig.replace(/\s+(and|but|while|whereas)\s+/gi, '. ')
                 }
-                sugg = sugg.replace(/(\.\s+)([a-z])/g, (_, p1, p2) => p1 + p2.toUpperCase())
+                sugg = sugg.replace(/(\.\s+)([a-z])/g, (_: string, p1: string, p2: string) => p1 + p2.toUpperCase())
             } else if (err.type?.includes('Academic') || err.type?.includes('Word') || err.type?.includes('Diction') || err.type?.includes('Informal')) {
                 sugg = orig
                     .replace(/\ba lot of\b/gi, 'numerous')
@@ -874,12 +874,21 @@ export default function EssayAnalysisPage() {
                                                             <span className="font-bold text-emerald-400 flex items-center gap-1.5">
                                                                 <Sparkles size={13} className="text-emerald-400" /> ✅ Recommended Specification:
                                                             </span>
-                                                            <button
-                                                                onClick={() => copyToClipboard(displaySugg)}
-                                                                className="text-[11px] text-emerald-300 hover:text-emerald-200 bg-emerald-500/10 hover:bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-500/30 flex items-center gap-1 cursor-pointer transition-all"
-                                                            >
-                                                                <Copy size={12} /> Copy Recommendation
-                                                            </button>
+                                                            <div className="flex items-center gap-2">
+                                                                <button
+                                                                    onClick={() => applyGrammarFix(err)}
+                                                                    disabled={appliedGrammarFixIds.includes(err.id)}
+                                                                    className="text-[11px] text-purple-300 hover:text-purple-200 bg-purple-500/20 hover:bg-purple-500/30 px-2.5 py-1 rounded-lg border border-purple-500/40 flex items-center gap-1 cursor-pointer transition-all disabled:opacity-50"
+                                                                >
+                                                                    <Sparkles size={12} /> {appliedGrammarFixIds.includes(err.id) ? 'Applied' : 'Apply Fix'}
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => copyToClipboard(displaySugg)}
+                                                                    className="text-[11px] text-emerald-300 hover:text-emerald-200 bg-emerald-500/10 hover:bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-500/30 flex items-center gap-1 cursor-pointer transition-all"
+                                                                >
+                                                                    <Copy size={12} /> Copy Recommendation
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                         <p className="text-emerald-200 font-mono leading-relaxed bg-black/40 p-2.5 rounded-lg border border-white/5">"{displaySugg}"</p>
                                                     </div>

@@ -1,13 +1,8 @@
-src/lib/reportGenerator.ts(20,5): error TS6133: 'NumberFormat' is declared but its value is never read.
-src/lib/reportGenerator.ts(320,48): error TS2353: Object literal may only specify known properties, and 'top' does not exist in type 'ISpacingProperties'.
-src/lib/reportGenerator.ts(326,48): error TS2353: Object literal may only specify known properties, and 'top' does not exist in type 'ISpacingProperties'.
-src/lib/reportGenerator.ts(399,46): error TS2345: Argument of type '{ data: ArrayBuffer; transformation: { width: number; height: number; }; }' is not assignable to parameter of type 'IImageOptions'.
-  Type '{ data: ArrayBuffer; transformation: { width: number; height: number; }; }' is not assignable to type 'SvgMediaOptions & CoreImageOptions'.
-    Type '{ data: ArrayBuffer; transformation: { width: number; height: number; }; }' is missing the following properties from type 'SvgMediaOptions': type, fallback
-src/lib/reportGenerator.ts(421,46): error TS2345: Argument of type '{ data: ArrayBuffer; transformation: { width: number; height: number; }; }' is not assignable to parameter of type 'IImageOptions'.
-  Type '{ data: ArrayBuffer; transformation: { width: number; height: number; }; }' is not assignable to type 'SvgMediaOptions & CoreImageOptions'.
-    Type '{ data: ArrayBuffer; transformation: { width: number; height: number; }; }' is missing the following properties from type 'SvgMediaOptions': type, fallback
-src/lib/reportGenerator.ts(658,24): error TS2353: Object literal may only specify known properties, and 'top' does not exist in type 'ISpacingProperties'.
-src/lib/reportGenerator.ts(665,24): error TS2353: Object literal may only specify known properties, and 'top' does not exist in type 'ISpacingProperties'.
-src/pages/EssayAnalysisPage.tsx(638,98): error TS2322: Type '{ children: Element[]; key: any; padding: string; className: string; style: { borderLeftColor: string; }; }' is not assignable to type 'IntrinsicAttributes & GlassCardProps'.
-  Property 'style' does not exist on type 'IntrinsicAttributes & GlassCardProps'.
+src/lib/reportGenerator.ts(1042,32): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/pages/EssayAnalysisPage.tsx(3,54): error TS6133: 'Check' is declared but its value is never read.
+src/pages/EssayAnalysisPage.tsx(34,12): error TS6133: 'appliedGrammarFixIds' is declared but its value is never read.
+src/pages/EssayAnalysisPage.tsx(246,57): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/pages/EssayAnalysisPage.tsx(246,60): error TS7006: Parameter 'p1' implicitly has an 'any' type.
+src/pages/EssayAnalysisPage.tsx(246,64): error TS7006: Parameter 'p2' implicitly has an 'any' type.
+src/pages/EssayAnalysisPage.tsx(273,11): error TS6133: 'applyGrammarFix' is declared but its value is never read.
+src/pages/LoginPage.tsx(312,85): error TS2304: Cannot find name 'setShowCustomInput'.

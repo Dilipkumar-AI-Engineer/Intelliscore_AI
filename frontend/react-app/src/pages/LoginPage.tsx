@@ -309,7 +309,7 @@ export default function LoginPage() {
                         {accountModal && (
                             <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(5, 8, 22, 0.85)', backdropFilter: 'blur(8px)' }}>
                                 <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md glass-card p-6 border border-white/10 rounded-2xl shadow-2xl relative">
-                                    <button onClick={() => { setAccountModal(null); setShowCustomInput(false); }} className="absolute right-4 top-4 text-gray-400 hover:text-white text-lg cursor-pointer">✕</button>
+                                    <button onClick={() => setAccountModal(null)} className="absolute right-4 top-4 text-gray-400 hover:text-white text-lg cursor-pointer">✕</button>
 
                                     {/* Header with Provider Logo */}
                                     <div className="flex items-center gap-3 mb-4 pb-3 border-b border-white/10">
