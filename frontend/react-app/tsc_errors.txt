@@ -1,8 +1,0 @@
-src/lib/reportGenerator.ts(1042,32): error TS7006: Parameter 'c' implicitly has an 'any' type.
-src/pages/EssayAnalysisPage.tsx(3,54): error TS6133: 'Check' is declared but its value is never read.
-src/pages/EssayAnalysisPage.tsx(34,12): error TS6133: 'appliedGrammarFixIds' is declared but its value is never read.
-src/pages/EssayAnalysisPage.tsx(246,57): error TS7006: Parameter '_' implicitly has an 'any' type.
-src/pages/EssayAnalysisPage.tsx(246,60): error TS7006: Parameter 'p1' implicitly has an 'any' type.
-src/pages/EssayAnalysisPage.tsx(246,64): error TS7006: Parameter 'p2' implicitly has an 'any' type.
-src/pages/EssayAnalysisPage.tsx(273,11): error TS6133: 'applyGrammarFix' is declared but its value is never read.
-src/pages/LoginPage.tsx(312,85): error TS2304: Cannot find name 'setShowCustomInput'.
