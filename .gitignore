@@ -42,3 +42,4 @@ ml/models/*.bin
 
 # Logs
 *.log
+node_modules
