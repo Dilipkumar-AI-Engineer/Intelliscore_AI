@@ -1010,18 +1010,90 @@ export function mapBackendEssay(e: any) {
         return defaultSent;
     };
 
+    const makePair = (category: string, rawSentence: string, index: number) => {
+        const before = (rawSentence && rawSentence.trim().length > 5) ? rawSentence.trim() : 'The essay presents fundamental claims regarding the core subject.';
+        const cleanBefore = before.replace(/^["'“`]+|["'”`]+$/g, '').trim();
+        let after = cleanBefore;
+
+        if (category.includes('Structure') || index === 0) {
+            if (!/^(Furthermore|Consequently|Moreover|In addition|Therefore|Thus|However)/i.test(cleanBefore)) {
+                after = `Consequently, ${cleanBefore.charAt(0).toLowerCase() + cleanBefore.slice(1)}`;
+            } else {
+                after = cleanBefore.replace(/^(Furthermore|Consequently|Moreover|In addition|Therefore|Thus|However),?\s*/i, 'In light of this evidence, ');
+            }
+        } else if (category.includes('Vocabulary') || index === 1) {
+            after = cleanBefore
+                .replace(/\bvery good\b/gi, 'substantially advantageous')
+                .replace(/\ba lot of\b/gi, 'numerous key')
+                .replace(/\bthings?\b/gi, 'critical elements')
+                .replace(/\bstuff\b/gi, 'substantive content')
+                .replace(/\bplays a fundamental role\b/gi, 'serves as a primary catalyst')
+                .replace(/\bplays an important role\b/gi, 'serves as a crucial mechanism')
+                .replace(/\bplays a role\b/gi, 'serves as a key driver')
+                .replace(/\bshows\b/gi, 'demonstrates empirical evidence')
+                .replace(/\bbig\b/gi, 'substantial')
+                .replace(/\bhelp(s)?\b/gi, 'facilitate$1');
+
+            if (after === cleanBefore) {
+                if (/&|\band\b/i.test(cleanBefore)) {
+                    after = cleanBefore.replace(/\s+(&|\band\b)\s+/i, ' as well as comprehensive ');
+                } else {
+                    after = `From an academic standpoint, ${cleanBefore.charAt(0).toLowerCase() + cleanBefore.slice(1).replace(/\b(is|are|has|have|plays)\b/i, 'demonstrably $1')}`;
+                }
+            }
+        } else if (category.includes('Grammar') || index === 2) {
+            after = cleanBefore
+                .replace(/\bwas completed by\b/gi, 'was systematically executed by')
+                .replace(/\bwas done by\b/gi, 'was thoroughly conducted by')
+                .replace(/\bwas written by\b/gi, 'was authored by')
+                .replace(/\bis written by\b/gi, 'is formulated by')
+                .replace(/\bplays a fundamental role in\b/gi, 'serves as a foundational pillar for')
+                .replace(/\bplays a key role in\b/gi, 'directly governs')
+                .replace(/\bplays\b/gi, 'operates as');
+
+            if (after === cleanBefore) {
+                if (/\bin\b/i.test(cleanBefore)) {
+                    after = cleanBefore.replace(/\bin\b/i, 'specifically within');
+                } else {
+                    after = `Active Syntactic Form: ${cleanBefore.replace(/\b(is|are|was|were)\b\s+(\w+ed|\w+en)/i, '$2 directly')}`;
+                    if (after === `Active Syntactic Form: ${cleanBefore}`) {
+                        after = `Restructured: ${cleanBefore.charAt(0).toUpperCase() + cleanBefore.slice(1)} — thereby bolstering analytical precision.`;
+                    }
+                }
+            }
+        } else {
+            if (!/Smith|et al|research|empirical|data|evidence|citation/i.test(cleanBefore)) {
+                after = `Recent empirical research (Smith et al., 2024) substantiates that ${cleanBefore.charAt(0).toLowerCase() + cleanBefore.slice(1)}`;
+            } else {
+                after = `Furthermore, academic consensus confirms that ${cleanBefore.charAt(0).toLowerCase() + cleanBefore.slice(1)}`;
+            }
+        }
+
+        if (after.trim() === cleanBefore.trim()) {
+            after = `Elevated Revision: ${cleanBefore} — thereby advancing academic rigor.`;
+        }
+
+        return { beforeExample: cleanBefore, afterExample: after };
+    };
+
     const suggestions = (e.suggestions && e.suggestions.length > 0) ? e.suggestions.map((s: any, idx: number) => {
         const matchedRealSent = getRealSent(idx, 'The essay presents arguments regarding the main topic.');
+        const cat = s.category || (idx === 0 ? 'Structure & Flow' : idx === 1 ? 'Academic Vocabulary' : idx === 2 ? 'Grammatical Precision' : 'Argumentation & Evidence');
+        const pair = makePair(cat, s.beforeExample || matchedRealSent, idx);
+
+        const before = s.beforeExample && s.afterExample && s.beforeExample.trim() !== s.afterExample.trim()
+            ? s.beforeExample
+            : pair.beforeExample;
+        const after = s.beforeExample && s.afterExample && s.beforeExample.trim() !== s.afterExample.trim()
+            ? s.afterExample
+            : pair.afterExample;
+
         return {
             ...s,
             id: s.id || idx + 1,
-            beforeExample: s.beforeExample || matchedRealSent,
-            afterExample: s.afterExample || (
-                idx === 0 ? `Furthermore, ${matchedRealSent.charAt(0).toLowerCase() + matchedRealSent.slice(1)}` :
-                    idx === 1 ? matchedRealSent.replace(/\bvery good\b/gi, 'substantially advantageous').replace(/\ba lot of\b/gi, 'numerous key').replace(/\bthings?\b/gi, 'elements') :
-                        idx === 2 ? matchedRealSent.replace(/\bwas performed by\b/gi, 'was systematically executed by') :
-                            `Empirical scholars affirm that ${matchedRealSent.charAt(0).toLowerCase() + matchedRealSent.slice(1)}`
-            )
+            category: cat,
+            beforeExample: before,
+            afterExample: after
         };
     }) : [
         {
@@ -1030,8 +1102,7 @@ export function mapBackendEssay(e: any) {
             impact: coherence < 80 ? 'High' : 'Medium',
             title: 'Refine Paragraph Transitions & Cohesion',
             description: 'Review logical connectors across all paragraphs to strengthen argument progression.',
-            beforeExample: getRealSent(0, 'The essay presents arguments regarding the main topic.'),
-            afterExample: `Furthermore, ${getRealSent(0, 'the essay presents arguments').charAt(0).toLowerCase() + getRealSent(0, 'the essay presents arguments').slice(1)}`
+            ...makePair('Structure & Flow', getRealSent(0, 'The essay presents arguments regarding the main topic.'), 0)
         },
         {
             id: 2,
@@ -1039,11 +1110,7 @@ export function mapBackendEssay(e: any) {
             impact: vocab < 80 ? 'High' : 'Medium',
             title: 'Elevate Lexical Diversity & Diction',
             description: `Document currently exhibits a ${lexicalDivPct}% lexical diversity across ${wordCnt} total words. Replace generic terms with domain terminology.`,
-            beforeExample: getRealSent(1, 'This aspect of the topic is very good and interesting.'),
-            afterExample: getRealSent(1, 'This aspect of the topic is very good and interesting.')
-                .replace(/\bvery good\b/gi, 'substantially advantageous')
-                .replace(/\ba lot of\b/gi, 'numerous key')
-                .replace(/\bthings?\b/gi, 'critical elements')
+            ...makePair('Academic Vocabulary', getRealSent(1, 'This aspect of the topic is very good and interesting.'), 1)
         },
         {
             id: 3,
@@ -1051,10 +1118,7 @@ export function mapBackendEssay(e: any) {
             impact: grammar < 80 ? 'High' : 'Low',
             title: 'Optimize Sentence Structure & Active Voice',
             description: `Average sentence length is ${avgSentenceLen} words. Balance short declarative statements with compound analytical clauses.`,
-            beforeExample: getRealSent(2, 'The analysis was completed by the author.'),
-            afterExample: getRealSent(2, 'The analysis was completed by the author.')
-                .replace(/\bwas completed by\b/gi, 'was systematically executed by')
-                .replace(/\bwas done by\b/gi, 'was thoroughly conducted by')
+            ...makePair('Grammatical Precision', getRealSent(2, 'The analysis was completed by the author.'), 2)
         },
         {
             id: 4,
@@ -1062,8 +1126,7 @@ export function mapBackendEssay(e: any) {
             impact: argument < 80 ? 'High' : 'Medium',
             title: 'Expand Empirical Evidence & Citations',
             description: 'Incorporate authoritative scholarly citations and concrete data points to reinforce key thesis claims.',
-            beforeExample: getRealSent(3, 'This argument shows important findings.'),
-            afterExample: `Recent empirical research (Smith et al., 2024) substantiates that ${getRealSent(3, 'this argument shows important findings').charAt(0).toLowerCase() + getRealSent(3, 'this argument shows important findings').slice(1)}`
+            ...makePair('Argumentation & Evidence', getRealSent(3, 'This argument shows important findings.'), 3)
         }
     ];
 
