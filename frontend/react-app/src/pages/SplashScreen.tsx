@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { useAuth } from '@/context/AuthContext'
 
 const STATUS_MESSAGES = [
     'Initializing AI Engine...',
@@ -13,16 +12,10 @@ const STATUS_MESSAGES = [
 
 export default function SplashScreen() {
     const navigate = useNavigate()
-    const { isAuthenticated } = useAuth()
     const [progress, setProgress] = useState(0)
     const [statusIdx, setStatusIdx] = useState(0)
 
     useEffect(() => {
-        if (isAuthenticated) {
-            navigate('/dashboard', { replace: true })
-            return
-        }
-
         const DURATION = 2800  // ms total
         const TICK = 30        // ms per tick
         const totalTicks = DURATION / TICK
@@ -41,14 +34,14 @@ export default function SplashScreen() {
                 clearInterval(timer)
                 sessionStorage.setItem('splashShown', '1')
                 setTimeout(() => {
-                    navigate(isAuthenticated ? '/dashboard' : '/home', { replace: true })
+                    navigate('/home', { replace: true })
                 }, 350)
             }
         }, TICK)
 
         return () => clearInterval(timer)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isAuthenticated])
+    }, [])
 
     return (
         <div
