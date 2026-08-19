@@ -543,13 +543,30 @@ export const api = {
     },
 
     async uploadEssayText(text: string, title?: string) {
+        let activeEmail = '';
+        try {
+            const stored = localStorage.getItem('intelliscore_user');
+            if (stored) {
+                const u = JSON.parse(stored);
+                if (u && u.email) activeEmail = u.email.toLowerCase();
+            }
+        } catch { }
+
         try {
             const response = await fetchWithAuth('/essays/upload-text', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text, title }),
             });
-            return await response.json();
+            const data = await response.json();
+            if (data && !data.user_email && activeEmail) {
+                data.user_email = activeEmail;
+            }
+            // Save to local cache so Dashboard & Essay list update immediately
+            const stored = JSON.parse(localStorage.getItem('local_essays') || '[]');
+            stored.unshift(data);
+            localStorage.setItem('local_essays', JSON.stringify(stored));
+            return data;
         } catch (err: any) {
             console.warn("Backend upload-text failed, creating local fallback:", err);
             const words = text.trim().split(/\s+/).filter(Boolean);
@@ -559,6 +576,7 @@ export const api = {
                 title: essayTitle,
                 original_filename: `${essayTitle.toLowerCase().replace(/\s+/g, '_')}.txt`,
                 file_type: 'txt',
+                user_email: activeEmail,
                 raw_text: text,
                 word_count: words.length,
                 overall_score: Math.min(95, Math.max(65, 75 + (words.length % 15))),

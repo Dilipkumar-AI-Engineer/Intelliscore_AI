@@ -175,12 +175,16 @@ export default function AIWritingMentorPage() {
                 .trim()
 
             const created = await api.uploadEssayText(cleanText, cleanTitle)
-            toast.success(`🚀 Saved "${created.title || cleanTitle}" to workspace!`)
-            refreshEssays()
             if (created && created.id) {
+                await api.analyzeEssay(created.id)
                 sessionStorage.setItem('activeEssayId', String(created.id))
                 setSelectedEssayId(String(created.id))
             }
+            toast.success(`🚀 Saved & Analyzed "${created.title || cleanTitle}"! Opening Analysis...`)
+            refreshEssays()
+            setTimeout(() => {
+                navigate('/analysis')
+            }, 600)
         } catch (err) {
             console.error("Failed to save generated essay", err)
             toast.error("Failed to save essay to database")
